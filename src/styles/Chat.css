@@ -136,6 +136,9 @@
   background-color: #e9f5ff;
 }
 
+.avatar img {
+  width: 100%;
+}
 .avatar {
   width: 40px;
   height: 40px;
@@ -147,6 +150,7 @@
   justify-content: center;
   font-weight: bold;
   margin-right: 0.75rem;
+  overflow: hidden;
 }
 
 .conversation-details {
@@ -368,4 +372,4 @@
   margin: 0;
   color: #333;
   font-size: 1.25rem;
-} 
+}
