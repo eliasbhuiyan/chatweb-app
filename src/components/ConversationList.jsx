@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "../utils/dateUtils";
-import { chatServices } from "../services/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchConversations } from "../store/slices/conversationSlice";
 
 function ConversationList({ selectedId }) {
-  const userData = useSelector((state) => state.user);
-  const [conversation, setConversation] = useState([]);
+  const userData = useSelector((state) => state.authSlice.user);
+  const { conversation, error, status } = useSelector(
+    (state) => state.conversationSlice
+  );
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await chatServices.listConversation();
-        setConversation(res);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    dispatch(fetchConversations());
   }, []);
+
+  if (status === "loading") {
+    return <p>loading........</p>;
+  }
 
   if (!conversation || conversation.length === 0) {
     return (
@@ -39,7 +39,7 @@ function ConversationList({ selectedId }) {
           >
             <div className="avatar">
               {item.participent.avatar ? (
-                <img src={item.participent.avatar} alt="" />
+                <img src={item.participent.avatar} alt="user" />
               ) : (
                 item.participent.fullName.charAt(0).toUpperCase()
               )}

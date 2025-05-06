@@ -3,13 +3,16 @@ import { useState } from "react";
 import ConversationList from "../components/ConversationList";
 import ChatBox from "../components/ChatBox";
 import "../styles/Chat.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { chatServices } from "../services/api";
+import { fetchConversations } from "../store/slices/conversationSlice";
 
 function Chat() {
-  const userData = useSelector((state) => state.user);
+  const userData = useSelector((state) => state.authSlice.user);
+  const [contactEmail, setContactEmail] = useState("");
   // Add state to control input visibility
   const [showInputBox, setShowInputBox] = useState(false);
-
+  const dispatch = useDispatch();
   // Static conversation data
   const conversations = [
     {
@@ -41,6 +44,16 @@ function Chat() {
   // Static selected conversation
   const selectedConversation = conversations[0];
 
+  const handelAddConversation = async (e) => {
+    e.preventDefault();
+    try {
+      await chatServices.addConversation(contactEmail);
+      dispatch(fetchConversations());
+    } catch (error) {
+      console.log(error.response.data.error);
+    }
+  };
+
   return (
     <div className="chat-container">
       <div className="sidebar">
@@ -69,17 +82,19 @@ function Chat() {
           </div>
 
           {showInputBox && (
-            <div className="email-input-container">
+            <form
+              className="email-input-container"
+              onSubmit={handelAddConversation}
+            >
               <input
                 type="email"
                 placeholder="Enter email address"
                 className="email-input"
+                onChange={(e) => setContactEmail(e.target.value)}
+                required
               />
               <div className="input-actions">
-                <button
-                  className="add-button"
-                  onClick={() => setShowInputBox(false)}
-                >
+                <button type="submit" className="add-button">
                   Add
                 </button>
                 <button
@@ -89,7 +104,7 @@ function Chat() {
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           )}
         </div>
 
