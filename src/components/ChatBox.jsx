@@ -1,80 +1,57 @@
+import { useDispatch, useSelector } from "react-redux";
 import { formatTime } from "../utils/dateUtils";
+import { useEffect } from "react";
+import { fetchMessages } from "../store/slices/conversationSlice";
 
-function ChatBox({ conversation, currentUser }) {
-  // Static messages for design purposes
-  const messages = [
-    {
-      id: "m1",
-      text: "Hello there!",
-      sender: conversation?.user,
-      timestamp: new Date().getTime() - 3600000,
-    },
-    {
-      id: "m2",
-      text: "Hi! How are you?",
-      sender: currentUser,
-      timestamp: new Date().getTime() - 3500000,
-    },
-    {
-      id: "m3",
-      text: "I'm doing well, thanks for asking!",
-      sender: conversation?.user,
-      timestamp: new Date().getTime() - 3400000,
-    },
-    {
-      id: "m4",
-      text: "That's great to hear. What have you been up to lately?",
-      sender: currentUser,
-      timestamp: new Date().getTime() - 3300000,
-    },
-    {
-      id: "m5",
-      text: "Just working on some projects. How about you?",
-      sender: conversation?.user,
-      timestamp: new Date().getTime() - 3200000,
-    },
-  ];
+function ChatBox() {
+  const dispatch = useDispatch()
+  const { selectedConversation, messages } = useSelector(
+    (state) => state.conversationSlice
+  );
+  const user = useSelector((state) => state.authSlice.user);
 
-  if (!conversation) {
-    return (
-      <div className="chat-box empty-chat">
-        <div className="no-conversation-selected">
-          <p>Select a conversation or start a new one</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(()=>{        
+    dispatch(fetchMessages(selectedConversation.conversationID))
+  },[selectedConversation])  
 
   return (
     <div className="chat-box">
       <div className="chat-header">
         <div className="chat-user-info">
           <div className="avatar">
-            {conversation?.user?.name.charAt(0).toUpperCase()}
+            {
+             selectedConversation?.fullName?.charAt(0).toUpperCase()  
+            }
           </div>
           <div className="user-details">
-            <h3>{conversation?.user?.name}</h3>
-            <p>{conversation?.user?.email}</p>
+            <h3>{selectedConversation?.fullName}</h3>
+            <p>{selectedConversation?.email}</p>
           </div>
         </div>
       </div>
 
       <div className="messages-container">
-        {messages.map((message) => (
+        {
+        messages.length > 0
+        ?
+        messages.map((message) => (
           <div
-            key={message.id}
+            key={message._id}
             className={`message ${
-              message?.sender?.id === currentUser?.id ? "sent" : "received"
+              message?.sender === user?._id ? "sent" : "received"
             }`}
           >
             <div className="message-content">
-              <p>{message?.text}</p>
+              <p>{message?.content}</p>
               <span className="message-time">
                 {formatTime(message?.timestamp)}
               </span>
             </div>
           </div>
-        ))}
+        ))
+        :
+        <p className="no-message">No message</p>
+        }
       </div>
 
       <form className="message-input-form">

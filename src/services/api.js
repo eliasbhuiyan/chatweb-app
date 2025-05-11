@@ -50,4 +50,8 @@ export const chatServices = {
     });
     return res.data;
   },
+  getMessages: async (conversationID)=>{
+    const res = await api.get(`/chat/getmessage/${conversationID}`);
+    return res.data;
+  }
 };

@@ -13,36 +13,9 @@ function Chat() {
   // Add state to control input visibility
   const [showInputBox, setShowInputBox] = useState(false);
   const dispatch = useDispatch();
-  // Static conversation data
-  const conversations = [
-    {
-      id: "conv1",
-      user: { id: "user456", name: "Jane Doe", email: "jane@example.com" },
-      lastMessage: {
-        text: "Hello there!",
-        timestamp: new Date().getTime() - 3600000,
-      },
-    },
-    {
-      id: "conv2",
-      user: { id: "user789", name: "John Smith", email: "john@example.com" },
-      lastMessage: {
-        text: "Good to see you",
-        timestamp: new Date().getTime() - 7200000,
-      },
-    },
-    {
-      id: "conv3",
-      user: { id: "user101", name: "Sarah Wilson", email: "sarah@example.com" },
-      lastMessage: {
-        text: "Thanks for your help!",
-        timestamp: new Date().getTime() - 86400000,
-      },
-    },
-  ];
-
-  // Static selected conversation
-  const selectedConversation = conversations[0];
+  const { selectedConversation } = useSelector(
+    (state) => state.conversationSlice
+  );
 
   const handelAddConversation = async (e) => {
     e.preventDefault();
@@ -108,13 +81,20 @@ function Chat() {
           )}
         </div>
 
-        <ConversationList
-          conversations={conversations}
-          selectedId={selectedConversation.id}
-        />
+        <ConversationList />
       </div>
-
+     
+     {
+      selectedConversation
+      ?
       <ChatBox conversation={selectedConversation} currentUser={userData} />
+      :
+      <div className="chat-box empty-chat">
+        <div className="no-conversation-selected">
+          <p>Select a conversation or start a new one</p>
+        </div>
+      </div>
+     }
     </div>
   );
 }

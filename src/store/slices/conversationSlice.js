@@ -4,8 +4,23 @@ import { chatServices } from "../../services/api";
 export const fetchConversations = createAsyncThunk(
   "/chat/conversationlist",
   async () => {
-    const res = await chatServices.listConversation();
-    return res;
+    try {
+      const res = await chatServices.listConversation();
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }
+);
+export const fetchMessages = createAsyncThunk(
+  "/chat/getmessage",
+  async (conversationID) => {
+    try {      
+      const res = await chatServices.getMessages(conversationID);
+      return res;
+    } catch (error) {
+      return error;
+    }
   }
 );
 
@@ -13,10 +28,16 @@ const conversationSlice = createSlice({
   name: "conversation",
   initialState: {
     conversation: null,
+    selectedConversation: null,
+    messages: [],
     status: "active",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    selectConversation: (state, actions)=>{
+     state.selectedConversation = actions.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchConversations.pending, (state) => {
@@ -29,8 +50,14 @@ const conversationSlice = createSlice({
       .addCase(fetchConversations.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error;
-      });
+      })
+      
+      .addCase(fetchMessages.fulfilled, (state, action) => {
+        state.messages = action.payload;
+      })
+      
   },
 });
 
+export const {selectConversation} = conversationSlice.actions;
 export default conversationSlice.reducer;

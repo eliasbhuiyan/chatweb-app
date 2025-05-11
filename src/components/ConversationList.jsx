@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { formatDistanceToNow } from "../utils/dateUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchConversations } from "../store/slices/conversationSlice";
+import { fetchConversations, selectConversation } from "../store/slices/conversationSlice";
 
-function ConversationList({ selectedId }) {
+function ConversationList() {
   const userData = useSelector((state) => state.authSlice.user);
-  const { conversation, error, status } = useSelector(
+  const { conversation, selectedConversation, status } = useSelector(
     (state) => state.conversationSlice
   );
 
@@ -14,6 +14,7 @@ function ConversationList({ selectedId }) {
     dispatch(fetchConversations());
   }, []);
 
+  
   if (status === "loading") {
     return <p>loading........</p>;
   }
@@ -27,16 +28,23 @@ function ConversationList({ selectedId }) {
     );
   }
 
+  const handelSelect = (item)=>{
+   dispatch(selectConversation(item))
+  }
+
+
   return (
     <div className="conversation-list">
       {conversation.map((item) =>
         item.creator._id === userData._id ? (
           <div
             key={item._id}
+            onClick={()=>handelSelect({...item.participent, conversationID: item._id})}
             className={`conversation-item ${
-              selectedId === conversation.id ? "selected" : ""
+              selectedConversation?.conversationID === item._id ? "selected" : ""
             }`}
           >
+            
             <div className="avatar">
               {item.participent.avatar ? (
                 <img src={item.participent.avatar} alt="user" />
@@ -60,9 +68,10 @@ function ConversationList({ selectedId }) {
           </div>
         ) : (
           <div
+           onClick={()=>handelSelect({...item.creator, conversationID: item._id})}
             key={item._id}
             className={`conversation-item ${
-              selectedId === conversation.id ? "selected" : ""
+             selectedConversation?.conversationID === item._id ? "selected" : ""
             }`}
           >
             <div className="avatar">
