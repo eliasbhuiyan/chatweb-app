@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { formatTime } from "../utils/dateUtils";
-import { useEffect } from "react";
-import { fetchMessages } from "../store/slices/conversationSlice";
+import { useEffect, useRef, useState } from "react";
+import { fetchMessages, sendMessage } from "../store/slices/conversationSlice";
 
 function ChatBox() {
+  const chatContainer = useRef(null)
+  const [content, setContent] = useState("")
   const dispatch = useDispatch()
   const { selectedConversation, messages } = useSelector(
     (state) => state.conversationSlice
@@ -11,9 +13,23 @@ function ChatBox() {
   const user = useSelector((state) => state.authSlice.user);
 
   useEffect(()=>{        
-    dispatch(fetchMessages(selectedConversation.conversationID))
+    dispatch(fetchMessages(selectedConversation.conversationID))   
   },[selectedConversation])  
 
+  useEffect(() => {
+    const container = chatContainer.current;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    
+  }, [messages]);
+
+  const handelSendMessage = (e)=>{
+    e.preventDefault()
+    dispatch(sendMessage({content,reciverId: selectedConversation._id,conversationId: selectedConversation.conversationID}))
+    setContent("")
+  }
+  
   return (
     <div className="chat-box">
       <div className="chat-header">
@@ -30,7 +46,7 @@ function ChatBox() {
         </div>
       </div>
 
-      <div className="messages-container">
+      <div ref={chatContainer} className="messages-container">
         {
         messages.length > 0
         ?
@@ -54,9 +70,9 @@ function ChatBox() {
         }
       </div>
 
-      <form className="message-input-form">
-        <input type="text" placeholder="Type a message..." />
-        <button type="button">Send</button>
+      <form onSubmit={handelSendMessage} className="message-input-form">
+        <input value={content} required onChange={(e)=>setContent(e.target.value)} type="text" placeholder="Type a message..." />
+        <button type="submit">Send</button>
       </form>
     </div>
   );

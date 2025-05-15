@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConversationList from "../components/ConversationList";
 import ChatBox from "../components/ChatBox";
 import "../styles/Chat.css";
 import { useDispatch, useSelector } from "react-redux";
 import { chatServices } from "../services/api";
 import { fetchConversations } from "../store/slices/conversationSlice";
+import { initSocket } from "../services/socket";
 
 function Chat() {
   const userData = useSelector((state) => state.authSlice.user);
@@ -26,7 +27,10 @@ function Chat() {
       console.log(error.response.data.error);
     }
   };
-
+  
+  useEffect(()=>{
+    initSocket()
+  },[])
   return (
     <div className="chat-container">
       <div className="sidebar">

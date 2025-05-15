@@ -29,7 +29,9 @@ function ConversationList() {
   }
 
   const handelSelect = (item)=>{
-   dispatch(selectConversation(item))
+    if(item?.conversationID !== selectedConversation?.conversationID){
+      dispatch(selectConversation(item))
+    }
   }
 
 
