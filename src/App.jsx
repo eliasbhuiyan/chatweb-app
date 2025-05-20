@@ -5,6 +5,7 @@ import Chat from "./pages/Chat";
 import "./App.css";
 import OtpVerify from "./pages/OtpVerify";
 import Layout from "./components/Layout";
+import UserProfile from "./pages/Profile";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/verify-otp/:email" element={<OtpVerify />} />
         <Route path="/chat" element={<Layout />}>
           <Route index element={<Chat />} />
+          <Route path="/chat/profile" element={<UserProfile />} />
         </Route>
       </Routes>
     </Router>

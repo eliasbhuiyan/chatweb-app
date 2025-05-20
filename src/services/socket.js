@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import { store } from '../store';
 import { newMessage } from '../store/slices/conversationSlice';

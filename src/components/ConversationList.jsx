@@ -5,19 +5,19 @@ import { fetchConversations, selectConversation } from "../store/slices/conversa
 
 function ConversationList() {
   const userData = useSelector((state) => state.authSlice.user);
-  const { conversation, selectedConversation, status } = useSelector(
+  const { conversation, selectedConversation , messages} = useSelector(
     (state) => state.conversationSlice
   );
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchConversations());
-  }, []);
+  }, [messages]);
 
   
-  if (status === "loading") {
-    return <p>loading........</p>;
-  }
+  // if (status === "loading") {
+  //   return <p>loading........</p>;
+  // }
 
   if (!conversation || conversation.length === 0) {
     return (
@@ -33,7 +33,6 @@ function ConversationList() {
       dispatch(selectConversation(item))
     }
   }
-
 
   return (
     <div className="conversation-list">
@@ -80,7 +79,7 @@ function ConversationList() {
               {item.creator.avatar ? (
                 <img src={item.creator.avatar} alt="" />
               ) : (
-                item.creator.fullName.charAt(0).toUpperCase()
+                item?.creator?.fullName.charAt(0).toUpperCase()
               )}
             </div>
             <div className="conversation-details">

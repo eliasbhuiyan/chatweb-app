@@ -12,6 +12,17 @@ export const fetchConversations = createAsyncThunk(
     }
   }
 );
+export const addConversation = createAsyncThunk(
+  "/chat/createconversation",
+  async (participentEmail) => {
+    try {
+      const res = await chatServices.addConversation(participentEmail);
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+);
 export const fetchMessages = createAsyncThunk(
   "/chat/getmessage",
   async (conversationID) => {
@@ -65,6 +76,9 @@ const conversationSlice = createSlice({
       .addCase(fetchConversations.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error;
+      })
+      .addCase(addConversation.fulfilled, (state, action)=>{        
+        state.conversation.unshift(action.payload)
       })
       // Messages Login
       .addCase(fetchMessages.fulfilled, (state, action) => {

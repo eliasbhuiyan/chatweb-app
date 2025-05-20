@@ -37,6 +37,10 @@ export const authServices = {
     }
     return res.data;
   },
+  updateUser: async (fullName, password) =>{
+    const res = await api.post("/auth/update", {fullName, password})
+    return res.data;
+  }
 };
 
 export const chatServices = {

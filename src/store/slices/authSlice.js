@@ -1,5 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { authServices } from "../../services/api";
 
+
+export const updateUserThunk = createAsyncThunk(
+  "/auth/update",
+  async (userData) => {
+    const {fullName, password} = userData
+    try {
+      const res = await authServices.updateUser(fullName, password);
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -13,6 +27,15 @@ const authSlice = createSlice({
       console.log(state.value);
     },
   },
+  extraReducers: (builder) => {
+      builder
+       // Update User
+        .addCase(updateUserThunk.fulfilled, (state, actions) => {
+          state.user = actions.payload;
+          localStorage.setItem("loggedUser", JSON.stringify(actions.payload));
+        })
+         
+    },
 });
 
 export const { loggedUser, logOutUser } = authSlice.actions;

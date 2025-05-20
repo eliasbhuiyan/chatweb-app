@@ -4,8 +4,7 @@ import ConversationList from "../components/ConversationList";
 import ChatBox from "../components/ChatBox";
 import "../styles/Chat.css";
 import { useDispatch, useSelector } from "react-redux";
-import { chatServices } from "../services/api";
-import { fetchConversations } from "../store/slices/conversationSlice";
+import { addConversation } from "../store/slices/conversationSlice";
 import { initSocket } from "../services/socket";
 
 function Chat() {
@@ -21,8 +20,7 @@ function Chat() {
   const handelAddConversation = async (e) => {
     e.preventDefault();
     try {
-      await chatServices.addConversation(contactEmail);
-      dispatch(fetchConversations());
+      dispatch(addConversation(contactEmail));
     } catch (error) {
       console.log(error.response.data.error);
     }
@@ -36,7 +34,7 @@ function Chat() {
       <div className="sidebar">
         <div className="sidebar-header">
           <div className="user-info">
-            <Link to="/chat" className="user-profile">
+            <Link to="/chat/profile" className="user-profile">
               <div className="userImg">
                 <img src={userData?.avatar} alt="" />
               </div>

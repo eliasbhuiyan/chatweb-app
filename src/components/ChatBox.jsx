@@ -30,6 +30,7 @@ function ChatBox() {
     setContent("")
   }
   
+  
   return (
     <div className="chat-box">
       <div className="chat-header">
