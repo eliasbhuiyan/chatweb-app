@@ -19,7 +19,7 @@ function Login() {
     try {
       const res = await authServices.loginUser(regData);
       toast.success(res.success);
-      dispatch(loggedUser(res.user));
+      dispatch(loggedUser(res.user));      
       setTimeout(() => {
         navigate(`/chat`);
       }, 2000);

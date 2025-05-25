@@ -5,7 +5,7 @@ export const fetchConversations = createAsyncThunk(
   "/chat/conversationlist",
   async () => {
     try {
-      const res = await chatServices.listConversation();
+      const res = await chatServices.listConversation();     
       return res;
     } catch (error) {
       return Promise.reject(error);
@@ -75,7 +75,9 @@ const conversationSlice = createSlice({
       })
       .addCase(fetchConversations.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error;
+        state.error = action.error;        
+        localStorage.setItem("loggedUser", null);
+        localStorage.setItem("token", null);
       })
       .addCase(addConversation.fulfilled, (state, action)=>{        
         state.conversation.unshift(action.payload)

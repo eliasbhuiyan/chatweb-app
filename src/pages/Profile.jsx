@@ -9,11 +9,18 @@ const UserProfile = () => {
     const user = useSelector((state) => state.authSlice.user);
     const [userEditedData, setUserEditedData] = useState({
         fullName: user.fullName,
-        password: ""
+        password: "",
+        avatar: ""
     })
     
     const handelUpdate = ()=>{
         dispatch(updateUserThunk(userEditedData))
+        setUserEditedData({
+        fullName: user.fullName,
+        password: "",
+        avatar: ""
+       })
+       setEditMode(false)
     }
   return (
     <>
@@ -21,11 +28,21 @@ const UserProfile = () => {
         <div className="profile-container">
         <div className="profile-card">
             <button onClick={()=>setEditMode(!editMode)} className='editbtn'>Edit</button>
-            <img
-            src={user?.avatar}
-            alt="Profile"
-            className="profile-avatar"
-            />
+            <div className='profile-avatar' style={{position: "relative", overflow: "hidden", margin: "auto"}}>
+                <img
+                src={user?.avatar}
+                alt="Profile"
+                style={{width: "100%"}}
+               />
+               {
+                editMode &&
+
+               <label className='avatar_upload' htmlFor="avatar">
+                 <span>Upload +</span>
+                 <input onChange={(e)=>setUserEditedData((prv)=>({...prv, avatar: e.target.files[0]}))} name='image' id='avatar' type="file" />
+               </label>
+               }
+            </div>
             <input onChange={(e)=>setUserEditedData((prv)=>({...prv, fullName: e.target.value}))} type='text' value={editMode? userEditedData.fullName :user.fullName} className="profile-name"/>
             <input type='text' value={user.email} className="profile-email"/>
             {

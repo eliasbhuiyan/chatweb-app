@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": 'application/json',
   },
 });
 
@@ -15,7 +15,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (err) => {
+  (err) => {        
     return Promise.reject(err);
   }
 );
@@ -37,15 +37,19 @@ export const authServices = {
     }
     return res.data;
   },
-  updateUser: async (fullName, password) =>{
-    const res = await api.post("/auth/update", {fullName, password})
+  updateUser: async (fullName, password, avatar) =>{
+    const res = await api.post("/auth/update", {fullName, password, avatar},{
+      headers: {
+       "Content-Type": "multipart/form-data",
+      },
+    })
     return res.data;
   }
 };
 
 export const chatServices = {
   listConversation: async () => {
-    const res = await api.get("/chat/conversationlist");
+    const res = await api.get("/chat/conversationlist");   
     return res.data;
   },
   addConversation: async (participentEmail) => {
