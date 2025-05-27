@@ -5,15 +5,16 @@ import ChatBox from "../components/ChatBox";
 import "../styles/Chat.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addConversation } from "../store/slices/conversationSlice";
-import { initSocket } from "../services/socket";
+import { initSocket, socket } from "../services/socket";
 
 function Chat() {
+    const [activeUsers, setActiveUsers] = useState([])
   const userData = useSelector((state) => state.authSlice.user);
   const [contactEmail, setContactEmail] = useState("");
   // Add state to control input visibility
   const [showInputBox, setShowInputBox] = useState(false);
   const dispatch = useDispatch();
-  const { selectedConversation } = useSelector(
+  const { selectedConversation, conversation } = useSelector(
     (state) => state.conversationSlice
   );
 
@@ -25,10 +26,19 @@ function Chat() {
       console.log(error.response.data.error);
     }
   };
-  
+  const size = conversation.length;
+
   useEffect(()=>{
     initSocket()
+    socket.on("active_users", (res)=> setActiveUsers(res))
   },[])
+
+  useEffect(()=>{
+    conversation.forEach(item => {
+      socket.emit("join_room", item._id)      
+    });
+  },[size])
+  
   return (
     <div className="chat-container">
       <div className="sidebar">
@@ -83,7 +93,7 @@ function Chat() {
           )}
         </div>
 
-        <ConversationList />
+        <ConversationList activeUsers={activeUsers}/>
       </div>
      
      {

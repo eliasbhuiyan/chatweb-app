@@ -49,7 +49,7 @@ export const sendMessage = createAsyncThunk(
 const conversationSlice = createSlice({
   name: "conversation",
   initialState: {
-    conversation: null,
+    conversation: [],
     selectedConversation: null,
     messages: [],
     status: "active",
@@ -61,7 +61,12 @@ const conversationSlice = createSlice({
     },
     newMessage: (state, actions)=>{
       state.messages.push(actions.payload)
-    }
+    },
+    // joinRoom: (state, actions)=>{
+    //   state.conversation.forEach(item => {
+    //     socket.emit("join_room", item._id)      
+    //   });
+    // }
   },
   extraReducers: (builder) => {
     builder

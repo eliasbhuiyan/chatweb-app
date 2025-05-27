@@ -36,11 +36,14 @@ const UserProfile = () => {
                />
                {
                 editMode &&
-
+                 (userEditedData.avatar
+                 ?
+                  <img style={{position: "absolute", top: "0", left: "0", width: "100%"}} src={URL.createObjectURL(userEditedData.avatar)} alt=''/>
+                 :
                <label className='avatar_upload' htmlFor="avatar">
                  <span>Upload +</span>
                  <input onChange={(e)=>setUserEditedData((prv)=>({...prv, avatar: e.target.files[0]}))} name='image' id='avatar' type="file" />
-               </label>
+               </label>)
                }
             </div>
             <input onChange={(e)=>setUserEditedData((prv)=>({...prv, fullName: e.target.value}))} type='text' value={editMode? userEditedData.fullName :user.fullName} className="profile-name"/>

@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "../utils/dateUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConversations, selectConversation } from "../store/slices/conversationSlice";
 
-function ConversationList() {
+function ConversationList({activeUsers}) {
   const userData = useSelector((state) => state.authSlice.user);
   const { conversation, selectedConversation , messages} = useSelector(
     (state) => state.conversationSlice
@@ -15,10 +15,6 @@ function ConversationList() {
     
   }, [messages]);
 
-  
-  // if (status === "loading") {
-  //   return <p>loading........</p>;
-  // }
 
   if (!conversation || conversation.length === 0) {
     return (
@@ -42,7 +38,11 @@ function ConversationList() {
           <div
             key={item._id}
             onClick={()=>handelSelect({...item.participent, conversationID: item._id})}
-            className={`conversation-item ${
+            className={`conversation-item 
+              ${
+                activeUsers.includes(item.participent._id) && "active"
+              }
+               ${
               selectedConversation?.conversationID === item._id ? "selected" : ""
             }`}
           >
@@ -72,7 +72,11 @@ function ConversationList() {
           <div
            onClick={()=>handelSelect({...item.creator, conversationID: item._id})}
             key={item._id}
-            className={`conversation-item ${
+            className={`conversation-item
+               ${
+                activeUsers.includes(item.creator._id) && "active"
+              }
+              ${
              selectedConversation?.conversationID === item._id ? "selected" : ""
             }`}
           >
