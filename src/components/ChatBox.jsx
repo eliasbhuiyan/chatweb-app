@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { formatTime } from "../utils/dateUtils";
 import { useEffect, useRef, useState } from "react";
-import { fetchMessages, sendMessage } from "../store/slices/conversationSlice";
+import { fetchMessages, selectConversation, sendMessage } from "../store/slices/conversationSlice";
 
 function ChatBox() {
   const chatContainer = useRef(null)
@@ -28,12 +28,12 @@ function ChatBox() {
     e.preventDefault()
     dispatch(sendMessage({content,reciverId: selectedConversation._id,conversationId: selectedConversation.conversationID}))
     setContent("")
-  }
-  
+  } 
   
   return (
-    <div className="chat-box">
+    <div className={`chat-box ${selectedConversation ? "active" : ""}`}>
       <div className="chat-header">
+        <button className="back-button" onClick={() => dispatch(selectConversation(null))}>&#8678;</button>
         <div className="chat-user-info">
           <div className="avatar">
             {

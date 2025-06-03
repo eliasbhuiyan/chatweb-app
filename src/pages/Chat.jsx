@@ -41,7 +41,7 @@ function Chat() {
   
   return (
     <div className="chat-container">
-      <div className="sidebar">
+      <div className={`sidebar ${selectedConversation ? "" : "active"}`}>
         <div className="sidebar-header">
           <div className="user-info">
             <Link to="/chat/profile" className="user-profile">
@@ -95,7 +95,6 @@ function Chat() {
 
         <ConversationList activeUsers={activeUsers}/>
       </div>
-     
      {
       selectedConversation
       ?
