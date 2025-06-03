@@ -1,9 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "../styles/Auth.css";
 import { useState } from "react";
 import { authServices } from "../services/api";
+import { useSelector } from "react-redux";
 function Register() {
+  const user = useSelector((state) => state.authSlice.user);
   const navigate = useNavigate();
   const [regData, setRegData] = useState({
     fullName: "",
@@ -23,6 +25,9 @@ function Register() {
       toast.error(error.response.data.error);
     }
   };
+   if (user) {
+    return <Navigate to="/chat" replace />;
+  }
   return (
     <div className="auth-container">
       <ToastContainer

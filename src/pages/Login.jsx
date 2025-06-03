@@ -1,12 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import "../styles/Auth.css";
 import { useState } from "react";
 import { authServices } from "../services/api";
 import { toast, ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loggedUser } from "../store/slices/authSlice";
 
 function Login() {
+  const user = useSelector((state) => state.authSlice.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [regData, setRegData] = useState({
@@ -27,6 +28,10 @@ function Login() {
       toast.error(error.response.data.error);
     }
   };
+
+  if (user) {
+    return <Navigate to="/chat" replace />;
+  }
   return (
     <div className="auth-container">
       <ToastContainer

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { authServices } from "../services/api";
 import { toast, ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
 const OtpVerify = () => {
+  const user = useSelector((state) => state.authSlice.user);
   const params = useParams().email;
   const navigate = useNavigate();
   const [otp, setOtp] = useState(Array(4).fill(""));
@@ -25,6 +27,9 @@ const OtpVerify = () => {
       toast.error(error.response.data.error);
     }
   };
+   if (user) {
+    return <Navigate to="/chat" replace />;
+  }
   return (
     <div className="verify-otp-main">
       <ToastContainer
